@@ -36,6 +36,12 @@ const services: Service[] = [
     image: service4,
     to:'/services/data-warehouse'
   },
+  {
+    title: "Continuous Compliance Monitoring",
+    desc: "Stay compliant with industry standards and government mandated health requirements.",
+    image: service4,
+    to:'/services/data-warehouse'
+  },
 ];
 
 export default function Services() {
@@ -45,7 +51,7 @@ export default function Services() {
         Our Services
       </h2>
 
-      <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-6">
+      <div className="max-w-[1200px] mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 px-6">
         {services.map((s, i) => (
           <ServiceCard key={i} {...s} />
         ))}
