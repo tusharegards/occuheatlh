@@ -1,0 +1,35 @@
+@import "tailwindcss";
+
+
+@theme {
+  /* Brand colors */
+  --color-brand: #338A48;         /* main brand green */
+  --color-brand-dark: #007a38;    /* hover/active */
+  --color-brand-50: #e6f5ec;      /* light background (creates bg-brand-50) */
+
+  /* Accent colors */
+  --color-accent: #f39c12;
+  --color-accent-dark: #d87f00;
+
+  /* grayish */
+  --color-gray-50:  #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d6d6d6;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+
+
+  /* Text */
+  --color-text-dark: #1f2937;     /* gray-800-ish (for text-text-dark) */
+
+  /* Radius */
+  --radius-md: 4px;
+
+  /* (optional) If you want a semantic light variant too */
+  /* --color-brand-light: #e6f5ec;  -> gives bg-brand-light */
+}
+
+body{
+    font-family: 'Poppins','sans-serif';
+}
