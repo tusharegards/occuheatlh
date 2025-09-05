@@ -39,7 +39,12 @@ const slides: Slide[] = [
         description: "Maintain compliance with government and employer mandated health requirements tailored to your needs.",
         image: slide4,
     },
-
+    {
+        title: "OccuHealth",
+        subtitle: "Continuous Compliance Monitoring",
+        description: "Stay compliant with industry standards and government mandated health requirements.",
+        image: slide4,
+    },
 ];
 
 export default function Carousel() {
