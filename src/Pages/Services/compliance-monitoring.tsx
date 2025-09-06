@@ -38,7 +38,7 @@ const ComplianceMonitoring: React.FC = () => {
               {/* Right Column (Main Image) */}
               <div className="lg:w-1/2">
                 <img
-                  src="/src/assets/slide4.jpg" // Placeholder for your image
+                  src="/src/assets/slide5.jpg" // Placeholder for your image
                   alt="Database Image"
                   className="w-full h-auto object-cover rounded-lg shadow-lg"
                 />

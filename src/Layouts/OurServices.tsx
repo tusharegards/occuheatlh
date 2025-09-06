@@ -3,6 +3,7 @@ import service1 from "../assets/slide1.jpg"; // replace with your actual images
 import service2 from "../assets/slide2.jpg";
 import service3 from "../assets/slide3.jpg";
 import service4 from "../assets/slide4.jpg";
+import service5 from "../assets/slide5.jpg";
 
 type Service = {
   title: string;
@@ -39,7 +40,7 @@ const services: Service[] = [
   {
     title: "Continuous Compliance Monitoring",
     desc: "Stay compliant with industry standards and government mandated health requirements.",
-    image: service4,
+    image: service5,
     to:'/services/data-warehouse'
   },
 ];
