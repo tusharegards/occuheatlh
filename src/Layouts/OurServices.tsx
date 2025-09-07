@@ -41,7 +41,7 @@ const services: Service[] = [
     title: "Continuous Compliance Monitoring",
     desc: "Stay compliant with industry standards and government mandated health requirements.",
     image: service5,
-    to:'/services/data-warehouse'
+    to:'/services/compliance-monitoring'
   },
 ];
 
