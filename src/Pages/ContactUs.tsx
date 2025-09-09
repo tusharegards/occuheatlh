@@ -2,8 +2,9 @@
 
 // src/pages/ContactUs.tsx
 import React from 'react';
-import Footer from '../Layouts/Footer';
+
 import BecomeAClient from '../Layouts/BecomeAClient';
+import Location from '../Service/client-api';
 
 const ContactUs: React.FC = () => {
   return (
@@ -41,7 +42,7 @@ const ContactUs: React.FC = () => {
               <h2 className="mb-3 text-3xl font-bold text-gray-800 font-serif" style={{ fontFamily: 'Georgia, serif' }}>
                 Our Locations
               </h2>
-              <p className="mb-1 text-gray-600">391 E 149th Street, Ste 305-1, Bronx, NY 10455</p>
+              <Location />
               <h3 className="mt-4 mb-2 text-xl font-bold text-gray-800 font-serif" style={{ fontFamily: 'Georgia, serif' }}>
                 Walk-in Hours:
               </h3>
@@ -131,7 +132,7 @@ const ContactUs: React.FC = () => {
         </div>
       </div>
       <BecomeAClient />
-      <Footer />
+      
     </div>
 
   );

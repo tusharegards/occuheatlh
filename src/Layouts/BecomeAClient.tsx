@@ -4,12 +4,12 @@ import bgImage from '../assets/bgd.jpg'
 function BecomeAClient() {
 
   return (
-    <section className="w-full">
+    <section className="w-full mb-0 pb-0" style={{ marginBottom: 0 }}>
       <div className="mx-auto overflow-hidden">
-        <div
-          className="relative h-[420px] md:h-[520px] flex items-center justify-center text-center bg-cover bg-center"
-          style={{ backgroundImage: `url(${bgImage})` }}
-        >
+      <div
+      className="relative min-h-[420px] md:min-h-[520px] flex items-center justify-center text-center bg-cover bg-center"
+      style={{ backgroundImage: `url(${bgImage})` }}
+      >
           {/* Overlay to improve text readability */}
           <div className="absolute inset-0 bg-black/30" />
 

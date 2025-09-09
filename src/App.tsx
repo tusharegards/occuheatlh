@@ -10,6 +10,7 @@ import IndividualTestingVaccination from './Pages/Services/IndividualTestingVacc
 import Footer from './Layouts/Footer';
 import ComplianceMonitoring from './Pages/Services/compliance-monitoring';
 
+
 function App() {
 
   return (
@@ -17,14 +18,15 @@ function App() {
        <Navbar/>
        <Routes>
          <Route path="/" element={<Home />} />
-         <Route path="/services/pre-employment" element={<PreEmployment />} />
-         <Route path="/services/annual-health-screening" element={<AnnualHealthScreening />} />
-         <Route path="/services/data-warehouse" element={<DataWarehouse/>} />
-         <Route path="/services/compliance-monitoring" element={<ComplianceMonitoring/>} />
-         <Route path="/services/individual-testing-vaccination" element={<IndividualTestingVaccination/>} />
-         <Route path="/contact" element={<ContactUs/>} />
+         <Route path="/Services/pre-employment" element={<PreEmployment />} />
+         <Route path="/Services/annual-health-screening" element={<AnnualHealthScreening />} />
+         <Route path="/Services/data-warehouse" element={<DataWarehouse/>} />
+         <Route path="/Services/compliance-monitoring" element={<ComplianceMonitoring/>} />
+         <Route path="/Services/individual-testing-vaccination" element={<IndividualTestingVaccination/>} />
+         <Route path="/Contact" element={<ContactUs/>} />
       </Routes>
       <Footer/>
+     
     </>
   )
 }
