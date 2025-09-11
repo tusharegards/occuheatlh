@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
+import { MapPin } from 'lucide-react'
 
 interface LocationData {
   sys_id: string
@@ -46,7 +47,10 @@ function Location() {
               rel="noopener noreferrer"
               className="text-blue-600 text-sm hover:underline"
             >
-              Get Directions
+              <span className="inline-flex items-center">
+                <MapPin className="w-4 h-4 mr-1" />
+                Get Directions
+              </span>
             </a>
           </div>
         </div>
