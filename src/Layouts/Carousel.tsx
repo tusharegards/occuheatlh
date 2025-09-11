@@ -15,6 +15,14 @@ type Slide = {
 };
 
 const slides: Slide[] = [
+  
+    {
+    title: "OccuHealth",
+    subtitle: "Continuous Compliance Monitoring",
+    description:
+      "Stay compliant with industry standards and government mandated health requirements.",
+    image: slide5,
+    },
     {
         title: "OccuHealth",
         subtitle: "Pre-Employment Health Screening",
@@ -42,13 +50,6 @@ const slides: Slide[] = [
     description:
       "Order from our vast inventory of health data, including physical exams, lab tests, drug tests, and vaccination history.",
     image: slide4,
-  },
-  {
-    title: "OccuHealth",
-    subtitle: "Continuous Compliance Monitoring",
-    description:
-      "Stay compliant with industry standards and government mandated health requirements.",
-    image: slide5,
   },
 ];
 

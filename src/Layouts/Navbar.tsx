@@ -15,11 +15,12 @@ const mainLinks: NavItem[] = [
 ];
 
 const services: DropdownItem[] = [
+  { label: "Continuous Compliance Monitoring", to: "/services/compliance-monitoring" },
   { label: "Pre-Employment Health Screening", to: "/services/pre-employment" },
   { label: "Annual Health Screening", to: "/services/annual-health-screening" },
   { label: "Individual Testing & Vaccination", to: "/services/individual-testing-vaccination" },
   { label: "Data Warehouse Solutions", to: "/services/data-warehouse" },
-  { label: "Continuous Compliance Monitoring", to: "/services/compliance-monitoring" },
+  
 ];
 
 export default function Navbar(): JSX.Element {
