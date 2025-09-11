@@ -1,5 +1,3 @@
-
-
 // src/pages/ContactUs.tsx
 import React from 'react';
 
@@ -18,7 +16,10 @@ const ContactUs: React.FC = () => {
 
       {/* Header Section */}
       <div className="container mx-auto px-4">
-        <h1 className="mb-4 text-green-700 text-5xl font-bold font-serif" style={{ fontFamily: 'Georgia, serif' }}>
+        <h1
+          className="mb-4 text-green-700 text-5xl font-bold font-serif"
+          style={{ fontFamily: 'Georgia, serif' }}
+        >
           Contact us
         </h1>
         <div className="flex flex-col sm:flex-row mb-12 space-y-4 sm:space-y-0 sm:space-x-12">
@@ -37,21 +38,30 @@ const ContactUs: React.FC = () => {
       <div className="bg-gray-100 py-16">
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row lg:space-x-16">
+            
             {/* Left Column: Our Locations */}
             <div className="lg:w-1/2 mb-8 lg:mb-0">
-              <h2 className="mb-3 text-3xl font-bold text-gray-800 font-serif" style={{ fontFamily: 'Georgia, serif' }}>
+              <h2
+                className="mb-6 text-3xl font-bold text-gray-800 font-serif"
+                style={{ fontFamily: 'Georgia, serif' }}
+              >
                 Our Locations
               </h2>
-              <Location />
-              <h3 className="mt-4 mb-2 text-xl font-bold text-gray-800 font-serif" style={{ fontFamily: 'Georgia, serif' }}>
-                Walk-in Hours:
-              </h3>
-              <p className="text-gray-600">9 AM to 5 PM - (Monday to Friday)</p>
+
+              {/* Stack locations vertically */}
+              <div className="space-y-6">
+                <Location />
+              </div>
+
+              
             </div>
 
             {/* Right Column: Leave your queries Form */}
             <div className="lg:w-1/2">
-              <h2 className="mb-3 text-3xl font-bold text-gray-800 font-serif" style={{ fontFamily: 'Georgia, serif' }}>
+              <h2
+                className="mb-3 text-3xl font-bold text-gray-800 font-serif"
+                style={{ fontFamily: 'Georgia, serif' }}
+              >
                 Leave your queries
               </h2>
               <p className="mb-4 text-gray-600">
@@ -132,9 +142,7 @@ const ContactUs: React.FC = () => {
         </div>
       </div>
       <BecomeAClient />
-      
     </div>
-
   );
 };
 
