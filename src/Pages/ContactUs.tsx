@@ -10,7 +10,7 @@ const ContactUs: React.FC = () => {
       {/* Breadcrumb */}
       <div className="container mx-auto px-4">
         <div className="text-sm text-gray-500 mb-6">
-          <a href="#" className="hover:underline text-purple-700">Home</a> &gt; <span className="font-semibold text-gray-700">Contact us</span>
+          <a href="/" className="hover:underline text-green-700">Home</a> &gt; <span className="font-semibold text-gray-700">Contact us</span>
         </div>
       </div>
 

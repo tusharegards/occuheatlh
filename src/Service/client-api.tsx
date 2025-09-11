@@ -19,34 +19,36 @@ function Location() {
       {locations.map((location) => (
         <div
           key={location.sys_id}
-          className="bg-white shadow-md rounded-lg p-6 space-y-2"
+          className="bg-white shadow-md rounded-lg p-6 flex flex-col justify-between h-full"
         >
-          {/* Clinic Name */}
-          <h3 className="text-gray-900 font-semibold text-lg">
-            {location.u_clinic_name}
-          </h3>
-
-          {/* Address (if available) */}
-          {location.u_address && (
-            <p className="text-gray-600">{location.u_address}</p>
-          )}
-
-          {/* Walk-in Hours */}
-          <p className="text-gray-500 text-sm">
-            Walk-In Hours: 9 AM to 5 PM
-          </p>
-
-          {/* Get Directions link */}
-          <a
-            href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-              location.u_address || location.u_clinic_name
-            )}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-600 text-sm hover:underline"
-          >
-            Get Directions
-          </a>
+          {/* Top: Clinic Name and Address */}
+          <div className="space-y-2">
+            <h3 className="text-gray-900 font-semibold text-lg">
+              {location.u_clinic_name}
+            </h3>
+            {location.u_address && (
+              <p className="text-gray-600">{location.u_address}</p>
+            )}
+          </div>
+          {/* Middle: Walk-In Hours */}
+          <div>
+            <p className="text-gray-500 text-sm mt-4">
+              Walk-In Hours: 9 AM to 5 PM
+            </p>
+          </div>
+          {/* Bottom: Get Directions */}
+          <div className="mt-4">
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+                location.u_address || location.u_clinic_name
+              )}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 text-sm hover:underline"
+            >
+              Get Directions
+            </a>
+          </div>
         </div>
       ))}
     </div>
