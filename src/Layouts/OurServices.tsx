@@ -14,6 +14,12 @@ type Service = {
 
 const services: Service[] = [
   {
+    title: "Continuous Compliance Monitoring",
+    desc: "Stay compliant with industry standards and government mandated health requirements.",
+    image: service5,
+    to:'/services/compliance-monitoring'
+  },
+  {
     title: "Pre-Employment Health Screening",
     desc: "Ensure that your new hires are in compliance with government...",
     image: service1,
@@ -36,12 +42,6 @@ const services: Service[] = [
     desc: "Order from our vast inventory of health data, including physical exams...",
     image: service4,
     to:'/services/data-warehouse'
-  },
-  {
-    title: "Continuous Compliance Monitoring",
-    desc: "Stay compliant with industry standards and government mandated health requirements.",
-    image: service5,
-    to:'/services/compliance-monitoring'
   },
 ];
 
