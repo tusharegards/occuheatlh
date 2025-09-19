@@ -4,6 +4,7 @@ import React from 'react';
 import BecomeAClient from '../Layouts/BecomeAClient';
 import Location from '../Service/client-api';
 
+
 const ContactUs: React.FC = () => {
   return (
     <div className="bg-gray-50 py-12">

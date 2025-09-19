@@ -9,7 +9,7 @@ interface LocationData {
 }
 
 function Location() {
-  const [locations, loading] = useReactQuery('/api')
+  const [locations, loading] = useReactQuery(import.meta.env.VITE_SN_URL)
 
   if (loading) {
     return <h1>Loading...</h1>
@@ -75,6 +75,9 @@ const useReactQuery = (urlPath: string): [LocationData[], boolean] => {
             username: import.meta.env.VITE_SN_USERNAME,
             password: import.meta.env.VITE_SN_PASSWORD,
           },
+          headers: { 'Content-Type': 'application/json',
+            'Accept': 'application/json'
+           },
         })
         console.log(response.data.result)
         setLocation(response.data.result)
