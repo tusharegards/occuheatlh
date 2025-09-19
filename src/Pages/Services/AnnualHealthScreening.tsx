@@ -3,6 +3,7 @@
 import React from 'react';
 import HowItWorks from '../../Layouts/HowItWorks';
 import BecomeAClient from '../../Layouts/BecomeAClient';
+import slideImg from '../../assets/slide2.jpg'
 
 const AnnualHealthScreening: React.FC = () => {
   return (
@@ -33,7 +34,7 @@ const AnnualHealthScreening: React.FC = () => {
           {/* Right Column (Main Image) */}
           <div className="lg:w-1/2">
             <img
-              src="/src/assets/slide2.jpg" 
+              src={slideImg}
               alt="Health care items with clock"
               className="w-full h-auto object-cover rounded-lg shadow-lg"
             />
