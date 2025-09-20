@@ -4,6 +4,8 @@
 import React from 'react';
 import HowItWorks from '../../Layouts/HowItWorks';
 import BecomeAClient from '../../Layouts/BecomeAClient';
+import slideImg from '../../assets/slide1.jpg'
+
 
 
 
@@ -33,7 +35,7 @@ const PreEmployment: React.FC = () => {
           {/* Right Column (Main Image) */}
           <div className="lg:w-1/2">
             <img
-              src="/src/assets/slide1.jpg"
+              src={slideImg}
               alt="People waiting for health screening"
               className="w-full h-auto object-cover rounded-lg shadow-lg"
             />

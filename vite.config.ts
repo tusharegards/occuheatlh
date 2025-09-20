@@ -8,7 +8,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://occuhealthdev.service-now.com/api/now/table/sn_customerservice_clinic?sysparm_fields=u_clinic_name', 
+        target: 'https://occuhealthdev.service-now.com', 
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace(/^\/api/, ''), 

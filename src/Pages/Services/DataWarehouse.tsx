@@ -3,6 +3,8 @@ import React from 'react';
 import BecomeAClient from '../../Layouts/BecomeAClient';
 
 import HowItWorks from '../../Layouts/HowItWorks';
+import slideImg from '../../assets/slide4.jpg'
+
 
 const DataWarehouse: React.FC = () => {
   return (
@@ -29,7 +31,7 @@ const DataWarehouse: React.FC = () => {
           {/* Right Column (Main Image) */}
           <div className="lg:w-1/2">
             <img
-              src="/src/assets/slide4.jpg" // Placeholder for your image
+              src={slideImg} // Placeholder for your image
               alt="Database Image"
               className="w-full h-auto object-cover rounded-lg shadow-lg"
             />

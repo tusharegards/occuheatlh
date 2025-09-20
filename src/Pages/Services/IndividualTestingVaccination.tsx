@@ -2,6 +2,8 @@
 import React from 'react';
 import BecomeAClient from '../../Layouts/BecomeAClient';
 import HowItWorks from '../../Layouts/HowItWorks';
+import slideImg from '../../assets/slide3.jpg'
+
 
 const  IndividualTestingVaccination: React.FC = () => {
   return (
@@ -62,7 +64,7 @@ const  IndividualTestingVaccination: React.FC = () => {
           {/* Right Column (Main Image) */}
           <div className="lg:w-1/2">
             <img
-              src="/src/assets/slide3.jpg" 
+              src={slideImg}
               alt="Doctor performing a health check"
               className="w-full h-auto object-cover rounded-lg shadow-lg"
             />
