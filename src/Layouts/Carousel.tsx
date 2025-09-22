@@ -80,7 +80,7 @@ export default function Carousel() {
           <img
             src={slide.image}
             alt={slide.subtitle}
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain md:object-cover"
           />
 
           {/* Text overlay */}
