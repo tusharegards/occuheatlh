@@ -76,12 +76,15 @@ export default function Carousel() {
             index === current ? "opacity-100" : "opacity-0"
           }`}
         >
-          {/* Background image */}
-          <img
-            src={slide.image}
-            alt={slide.subtitle}
-            className="w-full h-full object-contain md:object-cover"
-          />
+          {/* Background image container with 16:9 aspect ratio */}
+          <div className="w-full h-full aspect-video">
+            <img
+              src={slide.image}
+              alt={slide.subtitle}
+              className="w-full h-full object-cover"
+            />
+          </div>
+          
 
           {/* Text overlay */}
           <div
@@ -103,7 +106,7 @@ export default function Carousel() {
             onClick={() => setCurrent(index)}
             className={`w-3 h-3 rounded-full border ${
               index === current
-                ? "bg-yellow-400 border-yellow-400"
+                ? "bg-green-700 border-green-700"
                 : "bg-gray-300 border-gray-400"
             }`}
           />
