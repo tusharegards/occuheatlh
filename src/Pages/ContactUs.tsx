@@ -1,11 +1,17 @@
 // src/pages/ContactUs.tsx
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import BecomeAClient from '../Layouts/BecomeAClient';
 import Location from '../Service/client-api';
 
 
 const ContactUs: React.FC = () => {
+  useEffect(() => {
+    const navType = (performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming)?.type;
+    if (navType === 'reload') {
+      window.location.href = 'https://occuhealth.net/contact';
+    }
+  }, []);
   return (
     <div className="bg-gray-50 py-12">
       {/* Breadcrumb */}

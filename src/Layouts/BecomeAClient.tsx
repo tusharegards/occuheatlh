@@ -1,7 +1,15 @@
+import { useEffect } from 'react';
 import bgImage from '../assets/bgd.jpg'
 
 
 function BecomeAClient() {
+
+  useEffect(() => {
+    const navType = performance.getEntriesByType('navigation')[0]?.type;
+    if (navType === 'reload') {
+      window.location.href = 'https://occuhealth.net';
+    }
+  }, []);
 
   return (
     <section className="w-full mb-0 pb-0" style={{ marginBottom: 0 }}>
