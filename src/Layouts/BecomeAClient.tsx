@@ -5,7 +5,7 @@ import bgImage from '../assets/bgd.jpg'
 function BecomeAClient() {
 
   useEffect(() => {
-    const navType = performance.getEntriesByType('navigation')[0]?.type;
+    const navType = (performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming)?.type;
     if (navType === 'reload') {
       window.location.href = 'https://occuhealth.net';
     }
