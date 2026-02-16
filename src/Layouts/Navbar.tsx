@@ -20,19 +20,28 @@ const services: DropdownItem[] = [
   { label: "Annual Health Screening", to: "/services/annual-health-screening" },
   { label: "Individual Testing & Vaccination", to: "/services/individual-testing-vaccination" },
   { label: "Data Warehouse Solutions", to: "/services/data-warehouse" },
-  
+];
+
+const providers: DropdownItem[] = [
+  { label: "New Provider Onboarding", to: "https://occuhealthdev.service-now.com/ohp?id=become_provider" },
+  { label: "Provider Portal", to: "https://occuhealthdev.service-now.com/csmp" },
 ];
 
 export default function Navbar(): JSX.Element {
   const [menuOpen, setMenuOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false); // desktop
+  const [providersOpen, setProvidersOpen] = useState(false); // desktop
   const [servicesOpenMobile, setServicesOpenMobile] = useState(false); // mobile
+  const [providersOpenMobile, setProvidersOpenMobile] = useState(false); // mobile
   const servicesRef = useRef<HTMLLIElement>(null);
+  const providersRef = useRef<HTMLLIElement>(null);
 
   // Close desktop dropdown on outside click
   useEffect(() => {
     function onDocClick(e: MouseEvent) {
-      if (!servicesRef.current?.contains(e.target as Node)) setServicesOpen(false);
+      const target = e.target as Node;
+      if (!servicesRef.current?.contains(target)) setServicesOpen(false);
+      if (!providersRef.current?.contains(target)) setProvidersOpen(false);
     }
     document.addEventListener("mousedown", onDocClick);
     return () => document.removeEventListener("mousedown", onDocClick);
@@ -40,7 +49,10 @@ export default function Navbar(): JSX.Element {
 
   // Collapse mobile accordion when menu closes
   useEffect(() => {
-    if (!menuOpen) setServicesOpenMobile(false);
+    if (!menuOpen) {
+      setServicesOpenMobile(false);
+      setProvidersOpenMobile(false);
+    }
   }, [menuOpen]);
 
   return (
@@ -97,6 +109,38 @@ export default function Navbar(): JSX.Element {
                 </Link>
               </li>
             ))}
+
+            {/* Providers dropdown (desktop, last item) */}
+            <li
+              ref={providersRef}
+              className="relative"
+              onMouseEnter={() => setProvidersOpen(true)}
+              onMouseLeave={() => setProvidersOpen(false)}
+            >
+              <button
+                onClick={() => setProvidersOpen((s) => !s)}
+                className="inline-flex items-center gap-1 hover:text-brand"
+                aria-haspopup="menu"
+                aria-expanded={providersOpen}
+              >
+                Providers <FiChevronDown className="mt-[2px]" />
+              </button>
+
+              <div
+                className={`absolute left-0 top-full pt-3 w-72 transition-all z-30
+                  ${providersOpen ? "opacity-100 translate-y-0" : "pointer-events-none opacity-0 -translate-y-1"}`}
+              >
+                <ul className="overflow-hidden rounded-md bg-brand text-white shadow-lg">
+                  {providers.map((item) => (
+                    <li key={item.label}>
+                      <Link to={item.to} className="block px-4 py-2.5 hover:bg-brand-dark">
+                        {item.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </li>
           </ul>
 
           {/* Call button (desktop) */}
@@ -186,6 +230,42 @@ export default function Navbar(): JSX.Element {
               {link.label}
             </Link>
           ))}
+
+          {/* Providers (mobile accordion with smooth expand/collapse, last item) */}
+          <div>
+            <button
+              className="w-full flex items-center justify-between py-3"
+              onClick={() => setProvidersOpenMobile((s) => !s)}
+              aria-expanded={providersOpenMobile}
+            >
+              <span>Providers</span>
+              <FiChevronDown
+                className={`transition-transform ${providersOpenMobile ? "rotate-180" : ""}`}
+              />
+            </button>
+
+            {/* Animated height using grid trick */}
+            <div
+              className={`
+                grid transition-[grid-template-rows,opacity] duration-300 ease-out
+                ${providersOpenMobile ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}
+              `}
+            >
+              <ul className="overflow-hidden rounded-md bg-brand text-white">
+                {providers.map((item) => (
+                  <li key={item.label}>
+                    <Link
+                      className="block px-4 py-2 hover:bg-brand-dark"
+                      to={item.to}
+                      onClick={() => setMenuOpen(false)}
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
 
           {/* Mobile call button */}
           <a
