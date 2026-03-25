@@ -20,7 +20,7 @@ const services: DropdownItem[] = [
   { label: "Data Warehouse Solutions", to: "/services/data-warehouse" },
 ];
 
-const client: DropdownItem[] = [
+const employers: DropdownItem[] = [
   { label: "Become a Client", to: "https://occuhealth.service-now.com/ohp?id=become_client" },
   { label: "Employer Portal", to: "https://occuhealth.service-now.com/csm?id=csm_login" },
 ];
@@ -33,13 +33,13 @@ const providers: DropdownItem[] = [
 export default function Navbar(): JSX.Element {
   const [menuOpen, setMenuOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false); // desktop
-  const [clientOpen, setClientOpen] = useState(false); // desktop
+  const [employersOpen, setEmployersOpen] = useState(false); // desktop
   const [providersOpen, setProvidersOpen] = useState(false); // desktop
   const [servicesOpenMobile, setServicesOpenMobile] = useState(false); // mobile
-  const [clientOpenMobile, setClientOpenMobile] = useState(false); // mobile
+  const [employersOpenMobile, setEmployersOpenMobile] = useState(false); // mobile
   const [providersOpenMobile, setProvidersOpenMobile] = useState(false); // mobile
   const servicesRef = useRef<HTMLLIElement>(null);
-  const clientRef = useRef<HTMLLIElement>(null);
+  const employersRef = useRef<HTMLLIElement>(null);
   const providersRef = useRef<HTMLLIElement>(null);
 
   // Close desktop dropdown on outside click
@@ -47,7 +47,7 @@ export default function Navbar(): JSX.Element {
     function onDocClick(e: MouseEvent) {
       const target = e.target as Node;
       if (!servicesRef.current?.contains(target)) setServicesOpen(false);
-      if (!clientRef.current?.contains(target)) setClientOpen(false);
+      if (!employersRef.current?.contains(target)) setEmployersOpen(false);
       if (!providersRef.current?.contains(target)) setProvidersOpen(false);
     }
     document.addEventListener("mousedown", onDocClick);
@@ -58,7 +58,7 @@ export default function Navbar(): JSX.Element {
   useEffect(() => {
     if (!menuOpen) {
       setServicesOpenMobile(false);
-      setClientOpenMobile(false);
+      setEmployersOpenMobile(false);
       setProvidersOpenMobile(false);
     }
   }, [menuOpen]);
@@ -118,28 +118,28 @@ export default function Navbar(): JSX.Element {
               </li>
             ))}
 
-            {/* Client dropdown (desktop) */}
+            {/* Employers dropdown (desktop) */}
             <li
-              ref={clientRef}
+              ref={employersRef}
               className="relative"
-              onMouseEnter={() => setClientOpen(true)}
-              onMouseLeave={() => setClientOpen(false)}
+              onMouseEnter={() => setEmployersOpen(true)}
+              onMouseLeave={() => setEmployersOpen(false)}
             >
               <button
-                onClick={() => setClientOpen((s) => !s)}
+                onClick={() => setEmployersOpen((s) => !s)}
                 className="inline-flex items-center gap-1 hover:text-brand"
                 aria-haspopup="menu"
-                aria-expanded={clientOpen}
+                aria-expanded={employersOpen}
               >
-                Client <FiChevronDown className="mt-[2px]" />
+                Employers <FiChevronDown className="mt-[2px]" />
               </button>
 
               <div
                 className={`absolute left-0 top-full pt-3 w-72 transition-all z-30
-                  ${clientOpen ? "opacity-100 translate-y-0" : "pointer-events-none opacity-0 -translate-y-1"}`}
+                  ${employersOpen ? "opacity-100 translate-y-0" : "pointer-events-none opacity-0 -translate-y-1"}`}
               >
                 <ul className="overflow-hidden rounded-md bg-brand text-white shadow-lg">
-                  {client.map((item) => (
+                  {employers.map((item) => (
                     <li key={item.label}>
                       <Link to={item.to} className="block px-4 py-2.5 hover:bg-brand-dark">
                         {item.label}
@@ -271,16 +271,16 @@ export default function Navbar(): JSX.Element {
             </Link>
           ))}
 
-          {/* Client (mobile accordion with smooth expand/collapse) */}
+          {/* Employers (mobile accordion with smooth expand/collapse) */}
           <div>
             <button
               className="w-full flex items-center justify-between py-3"
-              onClick={() => setClientOpenMobile((s) => !s)}
-              aria-expanded={clientOpenMobile}
+              onClick={() => setEmployersOpenMobile((s) => !s)}
+              aria-expanded={employersOpenMobile}
             >
-              <span>Client</span>
+              <span>Employers</span>
               <FiChevronDown
-                className={`transition-transform ${clientOpenMobile ? "rotate-180" : ""}`}
+                className={`transition-transform ${employersOpenMobile ? "rotate-180" : ""}`}
               />
             </button>
 
@@ -288,11 +288,11 @@ export default function Navbar(): JSX.Element {
             <div
               className={`
                 grid transition-[grid-template-rows,opacity] duration-300 ease-out
-                ${clientOpenMobile ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}
+                ${employersOpenMobile ? "grid-rows-[1fr] opacity-100" : "grid-rows-[0fr] opacity-0"}
               `}
             >
               <ul className="overflow-hidden rounded-md bg-brand text-white">
-                {client.map((item) => (
+                {employers.map((item) => (
                   <li key={item.label}>
                     <Link
                       className="block px-4 py-2 hover:bg-brand-dark"
