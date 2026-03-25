@@ -3,7 +3,7 @@ import service1 from "../assets/slide1.jpg"; // replace with your actual images
 import service2 from "../assets/slide2.jpg";
 import service3 from "../assets/slide3.jpg";
 import service4 from "../assets/slide4.jpg";
-import service5 from "../assets/slide5.jpg";
+import service5 from "../assets/Ph5.svg";
 
 type Service = {
   title: string;

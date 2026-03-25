@@ -3,7 +3,7 @@
 import React from 'react';
 import HowItWorks from '../../Layouts/HowItWorks';
 import BecomeAClient from '../../Layouts/BecomeAClient';
-import slideImg from '../../assets/slide5.jpg'
+import slideImg from '../../assets/Ph5.svg'
 
 
 const ComplianceMonitoring: React.FC = () => {
