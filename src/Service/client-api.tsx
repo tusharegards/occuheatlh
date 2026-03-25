@@ -9,17 +9,25 @@ interface LocationData {
 }
 
 function Location() {
-  const [locations, loading] = useReactQuery(import.meta.env.VITE_SN_URL)
+  const [locations, loading, error] = useReactQuery(import.meta.env.VITE_SN_URL)
 
   if (loading) {
     return <h1>Loading...</h1>
+  }
+
+  if (error) {
+    return <p className="text-red-600 text-sm">{error}</p>
+  }
+
+  if (!locations.length) {
+    return <p className="text-gray-600 text-sm">No locations found.</p>
   }
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {locations.map((location) => (
         <div
-          key={location.sys_id}
+          key={location.sys_id || location.u_clinic_name}
           className="bg-white shadow-md rounded-lg p-6 flex flex-col justify-between h-full"
         >
           {/* Top: Clinic Name and Address */}
@@ -61,33 +69,89 @@ function Location() {
 
 export default Location
 
+function toRequestUrl(rawUrl: string): string {
+  const cleaned = rawUrl?.trim().replace(/^['"]|['"]$/g, '')
+  if (!cleaned) return ''
+
+  // If full ServiceNow URL is provided, route it through Vite proxy.
+  if (/^https?:\/\//i.test(cleaned)) {
+    try {
+      const parsed = new URL(cleaned)
+      if (parsed.hostname.endsWith('service-now.com')) {
+        return `/api${parsed.pathname}${parsed.search}`
+      }
+    } catch {
+      return cleaned
+    }
+  }
+
+  return cleaned
+}
+
 // Custom hook
-const useReactQuery = (urlPath: string): [LocationData[], boolean] => {
+const useReactQuery = (urlPath: string): [LocationData[], boolean, string | null] => {
   const [locations, setLocation] = useState<LocationData[]>([])
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+
+  const requestUrl = toRequestUrl(urlPath)
 
   useEffect(() => {
     ;(async () => {
       try {
+        if (!requestUrl) {
+          setError('Location API URL is missing. Check VITE_SN_URL in .env')
+          return
+        }
         setLoading(true)
-        const response = await axios.get(urlPath, {
+        setError(null)
+        const response = await axios.get(requestUrl, {
           auth: {
             username: import.meta.env.VITE_SN_USERNAME,
             password: import.meta.env.VITE_SN_PASSWORD,
           },
-          headers: { 'Content-Type': 'application/json',
-            'Accept': 'application/json'
-           },
+          headers: {
+            Accept: 'application/json, text/xml, application/xml',
+          },
         })
-        console.log(response.data.result)
-        setLocation(response.data.result)
-        setLoading(false)
+        const contentType = String(response.headers['content-type'] ?? '').toLowerCase()
+
+        if (contentType.includes('xml') || typeof response.data === 'string') {
+          const xmlText = String(response.data ?? '')
+          const doc = new DOMParser().parseFromString(xmlText, 'application/xml')
+          const resultNodes = Array.from(doc.getElementsByTagName('result'))
+          const parsed: LocationData[] = resultNodes.map((node, idx) => {
+            const clinic = node.getElementsByTagName('u_clinic_name')[0]?.textContent?.trim() ?? ''
+            const address = node.getElementsByTagName('u_address')[0]?.textContent?.trim() ?? undefined
+            const sysId = node.getElementsByTagName('sys_id')[0]?.textContent?.trim() ?? `row-${idx}`
+
+            return {
+              sys_id: sysId,
+              u_clinic_name: clinic,
+              u_address: address,
+            }
+          })
+          setLocation(parsed.filter((item) => item.u_clinic_name))
+        } else {
+          setLocation(response.data?.result ?? [])
+        }
       } catch (error) {
-        if(error)
+        if (axios.isAxiosError(error)) {
+          if (error.response) {
+            setError(`Location API error: ${error.response.status} ${error.response.statusText}`)
+          } else {
+            setError(
+              'Error loading locations. Please try again later.',
+            )
+          }
+        } else {
+          setError('Failed to load locations.')
+        }
+      } finally {
         setLoading(false)
       }
     })()
-  }, [urlPath])
+  }, [requestUrl])
 
-  return [locations, loading]
+  return [locations, loading, error]
 }
