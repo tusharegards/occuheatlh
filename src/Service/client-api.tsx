@@ -132,6 +132,12 @@ const useReactQuery = (urlPath: string): [LocationData[], boolean, string | null
           setError('Location API URL is missing. Check VITE_SN_URL in .env')
           return
         }
+        if (!import.meta.env.VITE_SN_USERNAME || !import.meta.env.VITE_SN_PASSWORD) {
+          setError(
+            'Missing API credentials in deployed environment (VITE_SN_USERNAME / VITE_SN_PASSWORD).',
+          )
+          return
+        }
         setLoading(true)
         setError(null)
         const candidates = [requestUrl, toDirectServiceNowUrl(requestUrl)].filter(
@@ -139,6 +145,7 @@ const useReactQuery = (urlPath: string): [LocationData[], boolean, string | null
         )
 
         let loaded = false
+        let lastFailure = ''
         for (const candidate of candidates) {
           try {
             const response = await axios.get(candidate, {
@@ -160,16 +167,32 @@ const useReactQuery = (urlPath: string): [LocationData[], boolean, string | null
               loaded = true
               break
             }
+            lastFailure = `No records from ${candidate}`
           } catch {
-            // try next candidate
+            // try next candidate and keep a diagnostic trail
+            try {
+              await axios.get(candidate, {
+                auth: {
+                  username: import.meta.env.VITE_SN_USERNAME,
+                  password: import.meta.env.VITE_SN_PASSWORD,
+                },
+                headers: { Accept: 'application/json, text/xml, application/xml' },
+              })
+            } catch (e) {
+              if (axios.isAxiosError(e)) {
+                if (e.response) {
+                  lastFailure = `${candidate} -> ${e.response.status} ${e.response.statusText}`
+                } else {
+                  lastFailure = `${candidate} -> network/CORS failure`
+                }
+              }
+            }
           }
         }
 
         if (!loaded) {
           setLocation([])
-          setError(
-            'No locations returned from production API route. Configure Azure to proxy /api/*, or allow direct ServiceNow CORS for your domain.',
-          )
+          setError(lastFailure || 'No locations returned from API.')
         }
       } catch (error) {
         if (axios.isAxiosError(error)) {
