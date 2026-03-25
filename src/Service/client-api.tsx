@@ -183,7 +183,7 @@ const useReactQuery = (urlPath: string): [LocationData[], boolean, string | null
                 if (e.response) {
                   lastFailure = `${candidate} -> ${e.response.status} ${e.response.statusText}`
                 } else {
-                  lastFailure = `${candidate} -> network/CORS failure`
+                  lastFailure = ` Error Fetching Data`
                 }
               }
             }
