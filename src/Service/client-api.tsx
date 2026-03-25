@@ -88,6 +88,35 @@ function toRequestUrl(rawUrl: string): string {
   return cleaned
 }
 
+function toDirectServiceNowUrl(pathOrUrl: string): string | null {
+  if (!pathOrUrl) return null
+  if (/^https?:\/\//i.test(pathOrUrl)) return pathOrUrl
+  if (pathOrUrl.startsWith('/api/')) return `https://occuhealth.service-now.com${pathOrUrl}`
+  return null
+}
+
+function parseLocations(data: unknown, contentType: string): LocationData[] {
+  // JSON payload from ServiceNow REST
+  if (!contentType.includes('xml') && typeof data !== 'string') {
+    return ((data as { result?: LocationData[] })?.result ?? []).filter((i) => i?.u_clinic_name)
+  }
+
+  // Azure static hosting may return index.html for unknown routes.
+  const xmlText = String(data ?? '')
+  if (xmlText.includes('<!doctype html') || xmlText.includes('<html')) return []
+
+  const doc = new DOMParser().parseFromString(xmlText, 'application/xml')
+  const resultNodes = Array.from(doc.getElementsByTagName('result'))
+  return resultNodes
+    .map((node, idx) => {
+      const clinic = node.getElementsByTagName('u_clinic_name')[0]?.textContent?.trim() ?? ''
+      const address = node.getElementsByTagName('u_address')[0]?.textContent?.trim() ?? undefined
+      const sysId = node.getElementsByTagName('sys_id')[0]?.textContent?.trim() ?? `row-${idx}`
+      return { sys_id: sysId, u_clinic_name: clinic, u_address: address }
+    })
+    .filter((item) => item.u_clinic_name)
+}
+
 // Custom hook
 const useReactQuery = (urlPath: string): [LocationData[], boolean, string | null] => {
   const [locations, setLocation] = useState<LocationData[]>([])
@@ -105,35 +134,42 @@ const useReactQuery = (urlPath: string): [LocationData[], boolean, string | null
         }
         setLoading(true)
         setError(null)
-        const response = await axios.get(requestUrl, {
-          auth: {
-            username: import.meta.env.VITE_SN_USERNAME,
-            password: import.meta.env.VITE_SN_PASSWORD,
-          },
-          headers: {
-            Accept: 'application/json, text/xml, application/xml',
-          },
-        })
-        const contentType = String(response.headers['content-type'] ?? '').toLowerCase()
+        const candidates = [requestUrl, toDirectServiceNowUrl(requestUrl)].filter(
+          (v, i, arr): v is string => Boolean(v) && arr.indexOf(v) === i,
+        )
 
-        if (contentType.includes('xml') || typeof response.data === 'string') {
-          const xmlText = String(response.data ?? '')
-          const doc = new DOMParser().parseFromString(xmlText, 'application/xml')
-          const resultNodes = Array.from(doc.getElementsByTagName('result'))
-          const parsed: LocationData[] = resultNodes.map((node, idx) => {
-            const clinic = node.getElementsByTagName('u_clinic_name')[0]?.textContent?.trim() ?? ''
-            const address = node.getElementsByTagName('u_address')[0]?.textContent?.trim() ?? undefined
-            const sysId = node.getElementsByTagName('sys_id')[0]?.textContent?.trim() ?? `row-${idx}`
+        let loaded = false
+        for (const candidate of candidates) {
+          try {
+            const response = await axios.get(candidate, {
+              auth: {
+                username: import.meta.env.VITE_SN_USERNAME,
+                password: import.meta.env.VITE_SN_PASSWORD,
+              },
+              headers: {
+                Accept: 'application/json, text/xml, application/xml',
+              },
+            })
 
-            return {
-              sys_id: sysId,
-              u_clinic_name: clinic,
-              u_address: address,
+            const contentType = String(response.headers['content-type'] ?? '').toLowerCase()
+            const parsed = parseLocations(response.data, contentType)
+
+            // Ignore HTML fallback responses from static hosting routes.
+            if (parsed.length > 0) {
+              setLocation(parsed)
+              loaded = true
+              break
             }
-          })
-          setLocation(parsed.filter((item) => item.u_clinic_name))
-        } else {
-          setLocation(response.data?.result ?? [])
+          } catch {
+            // try next candidate
+          }
+        }
+
+        if (!loaded) {
+          setLocation([])
+          setError(
+            'No locations returned from production API route. Configure Azure to proxy /api/*, or allow direct ServiceNow CORS for your domain.',
+          )
         }
       } catch (error) {
         if (axios.isAxiosError(error)) {
