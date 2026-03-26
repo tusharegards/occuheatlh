@@ -8,24 +8,31 @@ interface LocationData {
   u_address?: string   // optional field if you have address in your API
 }
 
+const fallbackLocations: LocationData[] = [
+  {
+    sys_id: 'fallback-1',
+    u_clinic_name: '133 East 58th Street, Suite 811, New Yr, NY, United States, 10022',
+  },
+  {
+    sys_id: 'fallback-2',
+    u_clinic_name: '391 E. 149th Street, Ste 305-1, Bronx, NY 10455.',
+  },
+]
+
 function Location() {
   const [locations, loading, error] = useReactQuery(import.meta.env.VITE_SN_URL)
+  const visibleLocations = locations.length ? locations : fallbackLocations
 
   if (loading) {
     return <h1>Loading...</h1>
   }
 
-  if (error) {
-    return <p className="text-red-600 text-sm">{error}</p>
-  }
-
-  if (!locations.length) {
-    return <p className="text-gray-600 text-sm">No locations found.</p>
-  }
+  // Intentionally do not surface API errors to users; show fallback locations instead.
+  void error
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {locations.map((location) => (
+      {visibleLocations.map((location) => (
         <div
           key={location.sys_id || location.u_clinic_name}
           className="bg-white shadow-md rounded-lg p-6 flex flex-col justify-between h-full"
