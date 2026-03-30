@@ -132,7 +132,15 @@ const ContactUs: React.FC = () => {
                     className="mt-1 mr-2 accent-green-600"
                   />
                   <label htmlFor="privacyCheck" className="text-gray-600 text-sm">
-                    By checking this box you agree to receive text messages from OccuHealth, you can reply stop to opt-out at any time, see <a href="#" className="text-green-700 hover:underline">privacy policy</a>
+                    By checking this box you agree to receive text messages from OccuHealth, you can reply stop to opt-out at any time, see{" "}
+                    <a
+                      href="/legal/privacy.html"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-green-700 hover:underline"
+                    >
+                      privacy policy
+                    </a>
                   </label>
                 </div>
 

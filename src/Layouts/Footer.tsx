@@ -1,6 +1,5 @@
 // src/Layouts/Footer.tsx
 import type { JSX } from "react";
-import { Link } from "react-router-dom";
 
 export default function Footer(): JSX.Element {
   return (
@@ -11,25 +10,25 @@ export default function Footer(): JSX.Element {
 
           <span className="hidden text-white/50 md:inline">|</span>
 
-          <Link
-            to="/terms"
+          <a
+            href="/legal/terms.html"
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm font-medium underline underline-offset-4 hover:text-white/90"
           >
             Terms and conditions
-          </Link>
+          </a>
 
           <span className="hidden text-white/50 md:inline">|</span>
 
-          <Link
-            to="/privacy"
+          <a
+            href="/legal/privacy.html"
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm font-medium underline underline-offset-4 hover:text-white/90"
           >
             Privacy Notice
-          </Link>
+          </a>
         </div>
       </div>
     </footer>
