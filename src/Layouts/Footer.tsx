@@ -16,7 +16,7 @@ export default function Footer(): JSX.Element {
             rel="noopener noreferrer"
             className="text-sm font-medium underline underline-offset-4 hover:text-white/90"
           >
-            Terms and conditions
+            Terms and Conditions
           </a>
 
           <span className="hidden text-white/50 md:inline">|</span>
