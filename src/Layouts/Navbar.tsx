@@ -26,7 +26,7 @@ const employers: DropdownItem[] = [
 ];
 
 const providers: DropdownItem[] = [
-  { label: "New Provider Onboarding", to: "https://occuhealthdev.service-now.com/ohp?id=become_provider" },
+  { label: "New Provider Onboarding", to: "https://occuhealth.service-now.com/ohp?id=become_provider" },
   { label: "Provider Portal", to: "https://occuhealthdev.service-now.com/csmp?id=csm_login" },
 ];
 
