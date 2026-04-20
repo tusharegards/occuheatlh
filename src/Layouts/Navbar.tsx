@@ -27,7 +27,7 @@ const employers: DropdownItem[] = [
 
 const providers: DropdownItem[] = [
   { label: "New Provider Onboarding", to: "https://occuhealth.service-now.com/ohp?id=become_provider" },
-  { label: "Provider Portal", to: "https://occuhealthdev.service-now.com/csmp?id=csm_login" },
+  { label: "Provider Portal", to: "https://occuhealth.service-now.com/csmp?id=csm_login" },
 ];
 
 export default function Navbar(): JSX.Element {
