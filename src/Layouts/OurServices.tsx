@@ -20,6 +20,12 @@ const services: Service[] = [
     to:'/services/compliance-monitoring'
   },
   {
+    title: "In-Service Training",
+    desc: "Stay compliant with industry standards and government mandated In-Service Training requirements.",
+    image: service5,
+    to:'/services/in-service-training'
+  },
+  {
     title: "Pre-Employment Health Screening",
     desc: "Ensure that your new hires are in compliance with government...",
     image: service1,

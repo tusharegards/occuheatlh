@@ -7,6 +7,7 @@ import DataWarehouse from "./Pages/Services/DataWarehouse";
 import ContactUs from "./Pages/ContactUs";
 import IndividualTestingVaccination from "./Pages/Services/IndividualTestingVaccination";
 import ComplianceMonitoring from "./Pages/Services/compliance-monitoring";
+import InServiceTraining from "./Pages/Services/InServiceTraining";
 import LegalDocument from "./Pages/LegalDocument";
 
 function App() {
@@ -20,6 +21,7 @@ function App() {
         <Route path="/Services/annual-health-screening" element={<AnnualHealthScreening />} />
         <Route path="/Services/data-warehouse" element={<DataWarehouse />} />
         <Route path="/Services/compliance-monitoring" element={<ComplianceMonitoring />} />
+        <Route path="/Services/in-service-training" element={<InServiceTraining />} />
         <Route path="/Services/individual-testing-vaccination" element={<IndividualTestingVaccination />} />
         <Route path="/Contact" element={<ContactUs />} />
         <Route path="/contact" element={<ContactUs />} />

@@ -14,6 +14,7 @@ const mainLinks: NavItem[] = [
 
 const services: DropdownItem[] = [
   { label: "Continuous Compliance Monitoring", to: "/services/compliance-monitoring" },
+  { label: "In-Service Training", to: "/services/in-service-training" },
   { label: "Pre-Employment Health Screening", to: "/services/pre-employment" },
   { label: "Annual Health Screening", to: "/services/annual-health-screening" },
   { label: "Individual Testing & Vaccination", to: "/services/individual-testing-vaccination" },
