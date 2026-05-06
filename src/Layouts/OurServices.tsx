@@ -4,6 +4,7 @@ import service2 from "../assets/slide2.jpg";
 import service3 from "../assets/slide3.jpg";
 import service4 from "../assets/slide4.jpg";
 import service5 from "../assets/slide5.jpg";
+import service6 from "../assets/slide6.jpg"
 
 type Service = {
   title: string;
@@ -22,7 +23,7 @@ const services: Service[] = [
   {
     title: "In-Service Training",
     desc: "Stay compliant with industry standards and government mandated In-Service Training requirements.",
-    image: service5,
+    image: service6,
     to:'/services/in-service-training'
   },
   {
