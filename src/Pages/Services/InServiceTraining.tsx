@@ -51,7 +51,7 @@ const InServiceTraining: React.FC = () => {
           </div>
         </div>
 
-        <HowItWorks />
+        <HowItWorks variant="inServiceTraining" />
       </div>
       <BecomeAClient />
     </>
