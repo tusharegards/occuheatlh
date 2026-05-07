@@ -17,12 +17,12 @@ function App() {
       <Route path="/privacy" element={<LegalDocument variant="privacy" />} />
       <Route element={<MainLayout />}>
         <Route path="/" element={<Home />} />
-        <Route path="/Services/pre-employment" element={<PreEmployment />} />
-        <Route path="/Services/annual-health-screening" element={<AnnualHealthScreening />} />
-        <Route path="/Services/data-warehouse" element={<DataWarehouse />} />
-        <Route path="/Services/compliance-monitoring" element={<ComplianceMonitoring />} />
-        <Route path="/Services/in-service-training" element={<InServiceTraining />} />
-        <Route path="/Services/individual-testing-vaccination" element={<IndividualTestingVaccination />} />
+        <Route path="/services/pre-employment" element={<PreEmployment />} />
+        <Route path="/services/annual-health-screening" element={<AnnualHealthScreening />} />
+        <Route path="/services/data-warehouse" element={<DataWarehouse />} />
+        <Route path="/services/compliance-monitoring" element={<ComplianceMonitoring />} />
+        <Route path="/services/in-service-training" element={<InServiceTraining />} />
+        <Route path="/services/individual-testing-vaccination" element={<IndividualTestingVaccination />} />
         <Route path="/Contact" element={<ContactUs />} />
         <Route path="/contact" element={<ContactUs />} />
       </Route>
