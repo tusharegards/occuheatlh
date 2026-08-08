@@ -102,10 +102,29 @@ function toDirectServiceNowUrl(pathOrUrl: string): string | null {
   return null
 }
 
+interface RawClinicLocationItem {
+  u_clinic_location?: {
+    display_value: string
+    link: string
+  }
+}
+
 function parseLocations(data: unknown, contentType: string): LocationData[] {
   // JSON payload from ServiceNow REST
   if (!contentType.includes('xml') && typeof data !== 'string') {
-    return ((data as { result?: LocationData[] })?.result ?? []).filter((i) => i?.u_clinic_name)
+    const rawList = (data as { result?: RawClinicLocationItem[] })?.result ?? []
+    return rawList
+      .map((item, idx): LocationData | null => {
+        const clinicLoc = item.u_clinic_location
+        if (!clinicLoc) return null
+        const parts = clinicLoc.link.split('/')
+        const sysId = parts[parts.length - 1] || `loc-${idx}`
+        return {
+          sys_id: sysId,
+          u_clinic_name: clinicLoc.display_value,
+        }
+      })
+      .filter((i): i is LocationData => i !== null && Boolean(i.u_clinic_name))
   }
 
   // Azure static hosting may return index.html for unknown routes.
@@ -115,14 +134,20 @@ function parseLocations(data: unknown, contentType: string): LocationData[] {
   const doc = new DOMParser().parseFromString(xmlText, 'application/xml')
   const resultNodes = Array.from(doc.getElementsByTagName('result'))
   return resultNodes
-    .map((node, idx) => {
-      const clinic = node.getElementsByTagName('u_clinic_name')[0]?.textContent?.trim() ?? ''
-      const address = node.getElementsByTagName('u_address')[0]?.textContent?.trim() ?? undefined
-      const sysId = node.getElementsByTagName('sys_id')[0]?.textContent?.trim() ?? `row-${idx}`
-      return { sys_id: sysId, u_clinic_name: clinic, u_address: address }
+    .map((node, idx): LocationData | null => {
+      const clinicLocNode = node.getElementsByTagName('u_clinic_location')[0]
+      if (!clinicLocNode) return null
+      const clinic = clinicLocNode.getAttribute('display_value') ?? clinicLocNode.textContent?.trim() ?? ''
+      const link = clinicLocNode.textContent?.trim() ?? ''
+      const parts = link.split('/')
+      const sysId = parts[parts.length - 1] || `row-${idx}`
+      return { sys_id: sysId, u_clinic_name: clinic }
     })
-    .filter((item) => item.u_clinic_name)
+    .filter((item): item is LocationData => item !== null && Boolean(item.u_clinic_name))
 }
+
+
+
 
 // Custom hook
 const useReactQuery = (urlPath: string): [LocationData[], boolean, string | null] => {
