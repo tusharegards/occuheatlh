@@ -1,5 +1,4 @@
 import { useEffect, useState } from 'react'
-import axios from 'axios'
 import { MapPin } from 'lucide-react'
 
 interface LocationData {
@@ -11,11 +10,11 @@ interface LocationData {
 const fallbackLocations: LocationData[] = [
   {
     sys_id: 'fallback-1',
-    u_clinic_name: '133 East 58th Street, Suite 811, New Yr, NY, United States, 10022',
+    u_clinic_name: '133 East 58th Street, Suite 811, New York, NY 10022',
   },
   {
     sys_id: 'fallback-2',
-    u_clinic_name: '391 E. 149th Street, Ste 305-1, Bronx, NY 10455.',
+    u_clinic_name: '391 E. 149th Street, Ste 305-1, Bronx, NY 10455',
   },
 ]
 
@@ -36,7 +35,6 @@ function formatAddress(addressStr: string): { line1: string; line2: string } {
 
   let index = parts.length - 1;
 
-  // 1. Check for Zip code at the very end
   if (index >= 0) {
     const lastPart = parts[index];
     const zipMatch = lastPart.match(/\b\d{5}(-\d{4})?\b/);
@@ -52,7 +50,6 @@ function formatAddress(addressStr: string): { line1: string; line2: string } {
     }
   }
 
-  // 2. Check for Country (if not already handled or if country is next)
   if (index >= 0) {
     const part = parts[index];
     if (['usa', 'united states', 'us'].includes(part.toLowerCase())) {
@@ -60,7 +57,6 @@ function formatAddress(addressStr: string): { line1: string; line2: string } {
     }
   }
 
-  // 3. Check for State (if not already found)
   if (!state && index >= 0) {
     const part = parts[index];
     if (part.length === 2 && part === part.toUpperCase()) {
@@ -69,13 +65,11 @@ function formatAddress(addressStr: string): { line1: string; line2: string } {
     }
   }
 
-  // 4. Check for City
   if (index >= 0) {
     city = parts[index];
     index--;
   }
 
-  // All remaining parts are the street address (Line 1)
   if (index >= 0) {
     streetParts = parts.slice(0, index + 1);
   }
@@ -105,15 +99,8 @@ function formatAddress(addressStr: string): { line1: string; line2: string } {
 }
 
 function Location() {
-  const [locations, loading, error] = useReactQuery(import.meta.env.VITE_SN_URL)
+  const [locations] = useReactQuery()
   const visibleLocations = locations.length ? locations : fallbackLocations
-
-  if (loading) {
-    return <h1>Loading...</h1>
-  }
-
-  // Intentionally do not surface API errors to users; show fallback locations instead.
-  void error
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -175,131 +162,13 @@ function Location() {
 
 export default Location
 
-function toRequestUrl(rawUrl: string): string {
-  const cleaned = rawUrl?.trim().replace(/^['"]|['"]$/g, '')
-  if (!cleaned) return ''
-
-  // If full ServiceNow URL is provided, route it through Vite proxy.
-  if (/^https?:\/\//i.test(cleaned)) {
-    try {
-      const parsed = new URL(cleaned)
-      if (parsed.hostname.endsWith('service-now.com')) {
-        return `/api${parsed.pathname}${parsed.search}`
-      }
-    } catch {
-      return cleaned
-    }
-  }
-
-  return cleaned
-}
-
-
-interface RawClinicLocationItem {
-  u_clinic_location?: {
-    display_value: string
-    link: string
-  }
-}
-
-function parseLocations(data: unknown, contentType: string): LocationData[] {
-  // JSON payload from ServiceNow REST
-  if (!contentType.includes('xml') && typeof data !== 'string') {
-    const rawList = (data as { result?: RawClinicLocationItem[] })?.result ?? []
-    return rawList
-      .map((item, idx): LocationData | null => {
-        const clinicLoc = item.u_clinic_location
-        if (!clinicLoc) return null
-        const parts = clinicLoc.link.split('/')
-        const sysId = parts[parts.length - 1] || `loc-${idx}`
-        return {
-          sys_id: sysId,
-          u_clinic_name: clinicLoc.display_value,
-        }
-      })
-      .filter((i): i is LocationData => i !== null && Boolean(i.u_clinic_name))
-  }
-
-  // Azure static hosting may return index.html for unknown routes.
-  const xmlText = String(data ?? '')
-  if (xmlText.includes('<!doctype html') || xmlText.includes('<html')) return []
-
-  const doc = new DOMParser().parseFromString(xmlText, 'application/xml')
-  const resultNodes = Array.from(doc.getElementsByTagName('result'))
-  return resultNodes
-    .map((node, idx): LocationData | null => {
-      const clinicLocNode = node.getElementsByTagName('u_clinic_location')[0]
-      if (!clinicLocNode) return null
-      const clinic = clinicLocNode.getAttribute('display_value') ?? clinicLocNode.textContent?.trim() ?? ''
-      const link = clinicLocNode.textContent?.trim() ?? ''
-      const parts = link.split('/')
-      const sysId = parts[parts.length - 1] || `row-${idx}`
-      return { sys_id: sysId, u_clinic_name: clinic }
-    })
-    .filter((item): item is LocationData => item !== null && Boolean(item.u_clinic_name))
-}
-
-
-
-
 // Custom hook
-const useReactQuery = (urlPath: string): [LocationData[], boolean, string | null] => {
+const useReactQuery = (): [LocationData[], boolean, string | null] => {
   const [locations, setLocation] = useState<LocationData[]>([])
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-
-  const requestUrl = toRequestUrl(urlPath)
 
   useEffect(() => {
-    ;(async () => {
-      const username = import.meta.env.VITE_SN_USERNAME
-      const password = import.meta.env.VITE_SN_PASSWORD
+    setLocation(fallbackLocations)
+  }, [])
 
-      if (!requestUrl) {
-        setError('Location API URL is missing. Check VITE_SN_URL in .env')
-        return
-      }
-
-      if (!username || !password) {
-        // Silently fail to fallback locations without popping up any login modal
-        setError('API credentials not set in production build.')
-        return
-      }
-
-      try {
-        setLoading(true)
-        setError(null)
-
-        const authHeader = 'Basic ' + btoa(`${username}:${password}`)
-
-        // Only request via relative proxy path (/api/...) to avoid cross-origin WWW-Authenticate browser popups
-        const response = await axios.get(requestUrl, {
-          headers: {
-            Authorization: authHeader,
-            Accept: 'application/json, text/xml, application/xml',
-          },
-        })
-
-        const contentType = String(response.headers['content-type'] ?? '').toLowerCase()
-        const parsed = parseLocations(response.data, contentType)
-
-        if (parsed.length > 0) {
-          setLocation(parsed)
-        } else {
-          setError('No location records found.')
-        }
-      } catch (e) {
-        // Silently catch errors so no native browser Basic Auth popup (401 WWW-Authenticate) is shown
-        if (axios.isAxiosError(e)) {
-          setError(e.response ? `API Error: ${e.response.status}` : 'Network error')
-        } else {
-          setError('Failed to fetch locations')
-        }
-      } finally {
-        setLoading(false)
-      }
-    })()
-  }, [requestUrl])
-
-  return [locations, loading, error]
+  return [locations, false, null]
 }
