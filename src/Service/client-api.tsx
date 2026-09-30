@@ -194,12 +194,6 @@ function toRequestUrl(rawUrl: string): string {
   return cleaned
 }
 
-function toDirectServiceNowUrl(pathOrUrl: string): string | null {
-  if (!pathOrUrl) return null
-  if (/^https?:\/\//i.test(pathOrUrl)) return pathOrUrl
-  if (pathOrUrl.startsWith('/api/')) return `https://occuhealth.service-now.com${pathOrUrl}`
-  return null
-}
 
 interface RawClinicLocationItem {
   u_clinic_location?: {
@@ -258,84 +252,48 @@ const useReactQuery = (urlPath: string): [LocationData[], boolean, string | null
 
   useEffect(() => {
     ;(async () => {
+      const username = import.meta.env.VITE_SN_USERNAME
+      const password = import.meta.env.VITE_SN_PASSWORD
+
+      if (!requestUrl) {
+        setError('Location API URL is missing. Check VITE_SN_URL in .env')
+        return
+      }
+
+      if (!username || !password) {
+        // Silently fail to fallback locations without popping up any login modal
+        setError('API credentials not set in production build.')
+        return
+      }
+
       try {
-        if (!requestUrl) {
-          setError('Location API URL is missing. Check VITE_SN_URL in .env')
-          return
-        }
-        if (!import.meta.env.VITE_SN_USERNAME || !import.meta.env.VITE_SN_PASSWORD) {
-          setError(
-            'Missing API credentials in deployed environment (VITE_SN_USERNAME / VITE_SN_PASSWORD).',
-          )
-          return
-        }
         setLoading(true)
         setError(null)
-        const candidates = [requestUrl, toDirectServiceNowUrl(requestUrl)].filter(
-          (v, i, arr): v is string => Boolean(v) && arr.indexOf(v) === i,
-        )
 
-        let loaded = false
-        let lastFailure = ''
-        for (const candidate of candidates) {
-          try {
-            const response = await axios.get(candidate, {
-              auth: {
-                username: import.meta.env.VITE_SN_USERNAME,
-                password: import.meta.env.VITE_SN_PASSWORD,
-              },
-              headers: {
-                Accept: 'application/json, text/xml, application/xml',
-              },
-            })
+        const authHeader = 'Basic ' + btoa(`${username}:${password}`)
 
-            const contentType = String(response.headers['content-type'] ?? '').toLowerCase()
-            const parsed = parseLocations(response.data, contentType)
+        // Only request via relative proxy path (/api/...) to avoid cross-origin WWW-Authenticate browser popups
+        const response = await axios.get(requestUrl, {
+          headers: {
+            Authorization: authHeader,
+            Accept: 'application/json, text/xml, application/xml',
+          },
+        })
 
-            // Ignore HTML fallback responses from static hosting routes.
-            if (parsed.length > 0) {
-              setLocation(parsed)
-              loaded = true
-              break
-            }
-            lastFailure = `No records from ${candidate}`
-          } catch {
-            // try next candidate and keep a diagnostic trail
-            try {
-              await axios.get(candidate, {
-                auth: {
-                  username: import.meta.env.VITE_SN_USERNAME,
-                  password: import.meta.env.VITE_SN_PASSWORD,
-                },
-                headers: { Accept: 'application/json, text/xml, application/xml' },
-              })
-            } catch (e) {
-              if (axios.isAxiosError(e)) {
-                if (e.response) {
-                  lastFailure = `${candidate} -> ${e.response.status} ${e.response.statusText}`
-                } else {
-                  lastFailure = ` Error Fetching Data`
-                }
-              }
-            }
-          }
-        }
+        const contentType = String(response.headers['content-type'] ?? '').toLowerCase()
+        const parsed = parseLocations(response.data, contentType)
 
-        if (!loaded) {
-          setLocation([])
-          setError(lastFailure || 'No locations returned from API.')
-        }
-      } catch (error) {
-        if (axios.isAxiosError(error)) {
-          if (error.response) {
-            setError(`Location API error: ${error.response.status} ${error.response.statusText}`)
-          } else {
-            setError(
-              'Error loading locations. Please try again later.',
-            )
-          }
+        if (parsed.length > 0) {
+          setLocation(parsed)
         } else {
-          setError('Failed to load locations.')
+          setError('No location records found.')
+        }
+      } catch (e) {
+        // Silently catch errors so no native browser Basic Auth popup (401 WWW-Authenticate) is shown
+        if (axios.isAxiosError(e)) {
+          setError(e.response ? `API Error: ${e.response.status}` : 'Network error')
+        } else {
+          setError('Failed to fetch locations')
         }
       } finally {
         setLoading(false)
