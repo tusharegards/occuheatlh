@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import axios from 'axios'
 import { MapPin } from 'lucide-react'
 
 interface LocationData {
@@ -8,14 +9,18 @@ interface LocationData {
 }
 
 const fallbackLocations: LocationData[] = [
-  {
-    sys_id: 'fallback-1',
-    u_clinic_name: '133 East 58th Street, Suite 811, New York, NY 10022',
-  },
-  {
-    sys_id: 'fallback-2',
-    u_clinic_name: '391 E. 149th Street, Ste 305-1, Bronx, NY 10455',
-  },
+  { sys_id: 'loc-1', u_clinic_name: '515 North Ave, New Rochelle, NY, United States, 10801' },
+  { sys_id: 'loc-2', u_clinic_name: '40 S Broadway, Yonkers, NY, United States, 10701' },
+  { sys_id: 'loc-3', u_clinic_name: '65 Niagara Sq, Buffalo, NY, United States, 14202' },
+  { sys_id: 'loc-4', u_clinic_name: '1 Metrotech Center, Brooklyn, NY, United States, 11201' },
+  { sys_id: 'loc-5', u_clinic_name: '1340 S Dixie Hwy, Miami, FL, USA, 33146' },
+  { sys_id: 'loc-6', u_clinic_name: '202 C St, San Diego, CA, United States, 92101' },
+  { sys_id: 'loc-7', u_clinic_name: '1 Public Square, Nashville, TN, United States, 37201' },
+  { sys_id: 'loc-8', u_clinic_name: '133 E, 58th Street, Suite 811, New York, NY, 10022' },
+  { sys_id: 'loc-9', u_clinic_name: '30 Church St, Rochester, NY, United States, 14614' },
+  { sys_id: 'loc-10', u_clinic_name: '600 E 4th St, Charlotte, NC, United States, 28202' },
+  { sys_id: 'loc-11', u_clinic_name: '1400 John F Kennedy Blvd, Philadelphia, PA, United States, 19107' },
+  { sys_id: 'loc-12', u_clinic_name: '391 E, 149th Street, Ste 305-1, Bronx, NY 10455' },
 ]
 
 function formatAddress(addressStr: string): { line1: string; line2: string } {
@@ -164,10 +169,45 @@ export default Location
 
 // Custom hook
 const useReactQuery = (): [LocationData[], boolean, string | null] => {
-  const [locations, setLocation] = useState<LocationData[]>([])
+  const [locations, setLocation] = useState<LocationData[]>(fallbackLocations)
 
   useEffect(() => {
-    setLocation(fallbackLocations)
+    ;(async () => {
+      const url = import.meta.env.VITE_SN_URL || '/api/now/table/sn_customerservice_clinic?sysparm_fields=u_clinic_name'
+      const username = import.meta.env.VITE_SN_USERNAME
+      const password = import.meta.env.VITE_SN_PASSWORD
+
+      if (!username || !password) {
+        return
+      }
+
+      try {
+        const authHeader = 'Basic ' + btoa(`${username}:${password}`)
+        const response = await axios.get(url, {
+          headers: {
+            Authorization: authHeader,
+            Accept: 'application/json',
+          },
+        })
+
+        const rawList = response.data?.result
+        if (Array.isArray(rawList) && rawList.length > 0) {
+          const parsed = rawList
+            .map((item: { u_clinic_name?: string }, idx: number): LocationData | null => {
+              const name = item.u_clinic_name?.trim()
+              if (!name || name.toLowerCase().includes('test, test')) return null
+              return { sys_id: `loc-api-${idx}`, u_clinic_name: name }
+            })
+            .filter((i): i is LocationData => i !== null)
+
+          if (parsed.length > 0) {
+            setLocation(parsed)
+          }
+        }
+      } catch {
+        // Keep fallback locations if API fetch fails or triggers CORS
+      }
+    })()
   }, [])
 
   return [locations, false, null]

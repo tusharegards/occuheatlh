@@ -8,7 +8,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://occuhealth.service-now.com',
+        target: 'https://occuhealthdev.service-now.com',
         changeOrigin: true,
         secure: false,
       },

@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://occuhealth.service-now.com/api/:path*"
+      "destination": "https://occuhealthdev.service-now.com/api/:path*"
     },
     {
       "source": "/((?!api/).*)",
